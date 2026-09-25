@@ -16,20 +16,15 @@ Everything else in the codebase reads from here.
 #     global keywords below
 MARKETS = [
     {
-        "name": "Destin / Fort Walton Beach, FL",
-        "state": "FL",
-        "fema_state_fips": "12",
-        "county_name": "Okaloosa",  # used to filter FEMA results by county
-        "nws_zone": "FLZ203",
-        "reddit_keywords": ["Destin", "Fort Walton", "Okaloosa", "30A", "Emerald Coast"],
-    },
-    {
-        "name": "Panama City Beach, FL",
+        "name": "Bay County, FL",
         "state": "FL",
         "fema_state_fips": "12",
         "county_name": "Bay",
-        "nws_zone": "FLZ207",
-        "reddit_keywords": ["Panama City Beach", "PCB", "Bay County FL"],
+        "nws_zone": ["FLZ012", "FLZ112"],  # Inland Bay + Coastal Bay
+        "reddit_keywords": [
+            "Panama City Beach", "Panama City FL", "PCB", "Bay County FL",
+            "Lynn Haven", "Callaway FL", "Springfield FL", "Mexico Beach",
+        ],
     },
     # Add more markets here, same shape.
 ]

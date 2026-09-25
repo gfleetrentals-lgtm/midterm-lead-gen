@@ -14,31 +14,35 @@ def fetch(markets):
     """Return active weather alerts for configured NWS zones."""
     signals = []
     for market in markets:
-        zone = market.get("nws_zone")
-        if not zone:
+        zones = market.get("nws_zone")
+        if not zones:
             continue
-        try:
-            resp = requests.get(NWS_URL.format(zone=zone), headers=HEADERS, timeout=20)
-            resp.raise_for_status()
-        except requests.RequestException as e:
-            print(f"[nws] request failed for {market['name']}: {e}")
-            continue
+        if isinstance(zones, str):
+            zones = [zones]
 
-        for feature in resp.json().get("features", []):
-            props = feature.get("properties", {})
-            severity = props.get("severity", "")
-            if severity not in ("Severe", "Extreme"):
-                continue  # skip routine/minor advisories, too noisy to act on
-            signals.append({
-                "source": "NWS",
-                "market": market["name"],
-                "title": props.get("event", "Weather Alert"),
-                "text": (
-                    f"{props.get('event')} ({severity}) active for {market['name']}. "
-                    f"{props.get('headline', '')} {props.get('description', '')[:400]}"
-                ),
-                "url": props.get("id", ""),
-                "posted_at": props.get("sent"),
-                "kind": "market_signal",
-            })
+        for zone in zones:
+            try:
+                resp = requests.get(NWS_URL.format(zone=zone), headers=HEADERS, timeout=20)
+                resp.raise_for_status()
+            except requests.RequestException as e:
+                print(f"[nws] request failed for {market['name']} ({zone}): {e}")
+                continue
+
+            for feature in resp.json().get("features", []):
+                props = feature.get("properties", {})
+                severity = props.get("severity", "")
+                if severity not in ("Severe", "Extreme"):
+                    continue  # skip routine/minor advisories, too noisy to act on
+                signals.append({
+                    "source": "NWS",
+                    "market": market["name"],
+                    "title": props.get("event", "Weather Alert"),
+                    "text": (
+                        f"{props.get('event')} ({severity}) active for {market['name']}. "
+                        f"{props.get('headline', '')} {props.get('description', '')[:400]}"
+                    ),
+                    "url": props.get("id", ""),
+                    "posted_at": props.get("sent"),
+                    "kind": "market_signal",
+                })
     return signals
