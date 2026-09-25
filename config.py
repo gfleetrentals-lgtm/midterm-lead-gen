@@ -37,7 +37,6 @@ MARKETS = [
 # Subreddits to search across all markets.
 SUBREDDITS = [
     "TravelNursing",
-    "ellijaynurses",  # example niche sub, delete if irrelevant
     "Construction",
     "IBEW",  # electrical/lineman union, common after storms
     "snowbirds",
